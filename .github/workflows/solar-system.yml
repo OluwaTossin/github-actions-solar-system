@@ -21,6 +21,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # Step a: Cache NPM dependencies
+      - name: Cache NPM dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm  # Cache path for NPM dependencies
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}  # Cache key based on OS and package-lock.json hash
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Setup NodeJS Version
         uses: actions/setup-node@v3
         with:
@@ -38,36 +47,3 @@ jobs:
         with:
           name: Mocha-Test-Result
           path: test-results.xml
-
-  # New code-coverage job
-  code-coverage:
-    name: Code Coverage
-    runs-on: ubuntu-latest  # a. Run on ubuntu-latest
-
-    steps:
-      # Step 1: Checkout the repository
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      # Step 2: Setup NodeJS version 18
-      - name: Setup NodeJS Version
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      # Step 3: Install dependencies
-      - name: Install Dependencies
-        run: npm install
-
-      # Step 4: Run code coverage command
-      - name: Run Code Coverage
-        run: npm run code-coverage
-        continue-on-error: true  # Prevent job failure if code-coverage step fails
-
-      # Step 5: Upload code coverage results
-      - name: Upload Code Coverage Results
-        uses: actions/upload-artifact@v3
-        with:
-          name: Code-Coverage-Result
-          path: coverage
-          retention-days: 5  # Keep the artifact for 5 days
