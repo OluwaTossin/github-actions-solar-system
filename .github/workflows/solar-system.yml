@@ -7,7 +7,6 @@ on:
       - main
       - 'feature/*'
 
-# Add environment variables at the workflow level
 env:
   MONGO_URI: 'mongodb+srv://supercluster.d83jj.mongodb.net/superData'
   MONGO_USERNAME: superuser
@@ -33,7 +32,9 @@ jobs:
       - name: Unit Testing
         run: npm test
 
+      # This step will always run even if the previous steps fail
       - name: Archive Test Result
+        if: always()  # Run this step regardless of the previous steps' success or failure
         uses: actions/upload-artifact@v3
         with:
           name: Mocha-Test-Result
