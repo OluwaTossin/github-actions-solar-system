@@ -32,9 +32,9 @@ jobs:
       - name: Unit Testing
         run: npm test
 
-      # This step will always run even if the previous steps fail
+      # This step will always run, even if the previous steps fail
       - name: Archive Test Result
-        if: always()  # Run this step regardless of the previous steps' success or failure
+        if: always()  # This ensures the step runs regardless of success or failure of prior steps
         uses: actions/upload-artifact@v3
         with:
           name: Mocha-Test-Result
