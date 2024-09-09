@@ -11,6 +11,11 @@ jobs:
     unit-testing:
         name: Unit Testing
         runs-on: ubuntu-latest
+        env:
+          MONGO_URI: 'mongodb+srv://supercluster.d83jj.mongodb.net/superData'
+          MONGO_USERNAME: superuser
+          MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}  # Refer to the repository secret
+
         steps:
         - name: Checkout Repository
           uses: actions/checkout@v4
