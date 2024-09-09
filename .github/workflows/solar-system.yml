@@ -32,17 +32,18 @@ jobs:
       - name: Unit Testing
         run: npm test
 
-      # This step will always run, even if the previous steps fail
       - name: Archive Test Result
-        if: always()  # This ensures the step runs regardless of success or failure of prior steps
+        if: always()  # Run this step even if previous steps fail
         uses: actions/upload-artifact@v3
         with:
           name: Mocha-Test-Result
           path: test-results.xml
 
+  # New code-coverage job
   code-coverage:
     name: Code Coverage
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # a. Run on ubuntu-latest
+
     steps:
       # Step 1: Checkout the repository
       - name: Checkout Repository
@@ -61,7 +62,7 @@ jobs:
       # Step 4: Run code coverage command
       - name: Run Code Coverage
         run: npm run code-coverage
-        continue-on-error: true  # This ensures the job doesn't fail even if this step fails
+        continue-on-error: true  # Prevent job failure if code-coverage step fails
 
       # Step 5: Upload code coverage results
       - name: Upload Code Coverage Results
@@ -69,4 +70,4 @@ jobs:
         with:
           name: Code-Coverage-Result
           path: coverage
-          retention-days: 5
+          retention-days: 5  # Keep the artifact for 5 days
