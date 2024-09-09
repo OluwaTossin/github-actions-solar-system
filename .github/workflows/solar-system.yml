@@ -28,7 +28,7 @@ jobs:
           path: ~/.npm  # Cache path for NPM dependencies
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}  # Cache key based on OS and package-lock.json hash
           restore-keys: |
-            ${{ runner.os }}-node-
+            ${{ runner.os }}-node-{hash}
 
       - name: Setup NodeJS Version
         uses: actions/setup-node@v3
