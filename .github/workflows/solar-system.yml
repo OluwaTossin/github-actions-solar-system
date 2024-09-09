@@ -1,38 +1,40 @@
-name: Installing Python
+name: Solar System Workflow
 
-on: [push]
+on: 
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - 'feature/*'
 
+# Add environment variables at the workflow level
 env:
   MONGO_URI: 'mongodb+srv://supercluster.d83jj.mongodb.net/superData'
   MONGO_USERNAME: superuser
-  MONGO_PASSWORD: SuperPassword
+  MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}  # Referencing the secret for MONGO_PASSWORD
 
 jobs:
-  build:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-12, windows-latest]
-        py-version: [3.7, 3.8, 3.9]
-        exclude:
-          - os: macos-12
-            py-version: 3.9   # Exclude macos-12 with Python 3.9
-
-    runs-on: ${{ matrix.os }}
+  unit-testing:
+    name: Unit Testing
+    runs-on: ubuntu-latest
 
     steps:
-    - name: Check out the repository
-      uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.py-version }}
+      - name: Setup NodeJS Version
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
 
-    - name: Verify Python version
-      run: python --version
+      - name: Install Dependencies
+        run: npm install
 
-    - name: Print environment variables (for debug)
-      run: |
-        echo $MONGO_URI
-        echo $MONGO_USERNAME
-        echo $MONGO_PASSWORD
+      - name: Unit Testing
+        run: npm test
+
+      - name: Archive Test Result
+        uses: actions/upload-artifact@v3
+        with:
+          name: Mocha-Test-Result
+          path: test-results.xml
